@@ -1,0 +1,5 @@
+# See https://docs.ansible.com/ansible/latest/tips_tricks/ansible_tips_tricks.html#inventory-tips
+
+[lab_ontap_clusters]
+cluster1 ontap_hostname=cluster1.demo.netapp.com
+cluster2 ontap_hostname=cluster2.demo.netapp.com
