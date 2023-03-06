@@ -1,0 +1,20 @@
+- name: Determine least utilized aggregate 
+  include_tasks: tasks/aggr_determine_least_utilized.yml 
+  when: aggr is not defined 
+- name: Create Volume '{{ vol }}'
+  netapp.ontap.na_ontap_volume:
+    state: present
+    name: "{{ vol_name }}"
+    vserver: "{{ svm | default(default_svm) }}"
+    aggregate_name: "{{ aggr | default(least_utilized_aggr) }}"
+    size: "{{ vol_size | default (default_vol_size)}}"
+    size_unit: "{{ vol_size_unit | default (default_vol_size_unit) }}"
+    policy: "{{ vol_policy | default(omit) }}"
+    junction_path: "{{ omit if vol_type is defined and vol_type == 'DP' else vol_junction_path | default('/'+vol) }}"
+    hostname: "{{ ontap_hostname }}"
+    type: "{{ vol_type | default(omit) }}"
+    username: "{{ ontap_username }}"
+    password: "{{ ontap_password }}"
+    https: "{{ https }}"
+    validate_certs: " {{ validate_certs }}"
+  delegate_to: localhost

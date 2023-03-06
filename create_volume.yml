@@ -1,0 +1,36 @@
+---
+- name: Create volume with auto incrementing name
+  hosts: "{{ ansible_limit }}"
+  gather_facts: no
+  connection: 'local'
+  collections:
+    - netapp.ontap
+  vars:
+    vol_name: Test
+    svm: svm1
+  tasks:
+  - name: Get aggr and volume info
+    include_tasks: tasks/ontap_get_cluster_info.yml
+    vars:
+      gather_subset: [aggregate_info, volume_info]
+  - name: > 
+        Use custom filter plugins to a) calculate least utilized aggregate b) get list of SVMs 
+        c) get list of matching volumes for {{ vol }}
+    set_fact:
+      aggr: "{{ ontap_info.aggregate_info | ontap_least_utilized_aggr }}"
+      # In addition to exact match, you could pass contains=volume_name to grab any volumes that contain the name
+      # You can also include root volumes by passing root_volumes=true
+      current_volumes: "{{ ontap_info.volume_info | ontap_volume_names(vol_name) }}"     
+  - name: Calculate new volume name using custom filter plugin.
+    set_fact:
+      # The default increment of 1 can be overriden by passing increment=n to filter as the second parameter
+      original_vol_name: "{{ vol_name }}"
+      vol_name: "{{ vol_name | ontap_volume_name_increment(ontap_info.volume_info) }}"
+  - name: Show Least Utilized Aggregate
+    debug: 
+      var: aggr 
+  - name: Show Current Volumes and Calculated Volume Name w/ Increment  
+    debug: 
+      msg: "The current volumes are {{ current_volumes }} so the new volume should be {{ vol_name }}"
+  - name: Create '{{ original_vol_name }}' w/ increment appended in least utilized aggr
+    include_tasks: tasks/volume_create.yml

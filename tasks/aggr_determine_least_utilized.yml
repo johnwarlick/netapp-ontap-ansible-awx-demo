@@ -1,0 +1,11 @@
+- name: Fetch ONTAP Cluster info for {{ inventory_hostname }}
+  include_tasks: ontap_get_cluster_info.yml
+  vars:
+    gather_subset: 
+      - aggregate_info
+- name: Set least_utilized_aggr fact using custom filter (filter_plugins/least_utilized_aggr.py)
+  set_fact:
+    least_utilized_aggr: "{{ ontap_info.aggregate_info | ontap_least_utilized_aggr }}" 
+- name: Display Least Utilized Aggr
+  debug:
+    msg: "{{ least_utilized_aggr }}" 
