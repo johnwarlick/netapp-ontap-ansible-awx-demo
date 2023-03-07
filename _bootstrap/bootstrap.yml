@@ -1,0 +1,99 @@
+---
+- name: Add venv config and bootstrap AWX w/ demo
+  hosts: localhost
+  gather_facts: no
+  collections:
+    - awx.awx
+  vars: 
+    tower_host: http://awx.demo.netapp.com
+    tower_username: admin
+    tower_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"  
+  tasks:
+  - name: Install virtualenv
+    pip:
+      name: virtualenv
+      executable: pip
+  - name: Ensure group "awx" exists
+    ansible.builtin.group:
+      name: awx
+      state: present
+  - name: Ensure user 'awx' exists
+    ansible.builtin.user:
+      name: awx
+      group: awx
+  - name: Create a directory if it does not exist
+    file:
+      path: /opt/awx-demo-envs
+      state: directory
+      mode: '0755'    
+      owner: awx
+      group: awx
+  - name: Create a new token using username/password
+    tower_token:
+      scope: "write"
+      state: present
+      tower_host: "{{ tower_host }}"
+      tower_username: "{{ tower_username }}"
+      tower_password: "{{ tower_password }}"
+  - name: Get tower CLI config file in place
+    template:
+      src: .tower_cli.cfg.j2
+      dest: .tower_cli.cfg    
+    vars: 
+      tower_oauth_token: "{{ tower_token.token }}"
+  - name: Add Custom VENV paths to Settings
+    tower_settings:
+      name: CUSTOM_VENV_PATHS
+      value: /opt/awx-demo-envs
+  - name: Add Galaxy/Automation Hub Variable to Jobs -> Settings
+    tower_settings:
+      name: PRIMARY_GALAXY_URL
+      value: https://galaxy.ansible.com
+  - name: Add ONTAP Cluster Admin custom credential type
+    tower_credential_type:
+      name: ONTAP Cluster Admin
+      kind: cloud
+      inputs: 
+        fields:
+          - id: ontap_username
+            type: string
+            label: ONTAP Username
+          - id: ontap_password
+            type: string
+            label: ONTAP Password
+            secret: true 
+        injectors: 
+          extra_vars:
+            ontap_password: "{%raw%}{{ ontap_password }}{%endraw%}"
+            ontap_username: "{%raw%}{{ ontap_username }}{%endraw%}"
+        state: present    
+  - name: Add ONTAP Admin Cluster credential
+    tower_credential:
+      name: ONTAP Admin
+      credential_type: ONTAP Cluster Admin
+      organization: Default
+      inputs:
+        ontap_username: "{{ hostvars[groups['ontap_clusters'][0]]['ontap_username'] }}"
+        ontap_password: "{{ hostvars[groups['ontap_clusters'][0]]['ontap_password'] }}"
+  - name: Add this repo as a project in AWX
+    tower_project:
+      name: "Provisioning Demo"
+      description: "For demoing ONTAP provisioning workflows in Ansible"
+      organization: "Default"
+      scm_type: git
+      scm_url: https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo
+      scm_update_on_launch: yes
+      state: present
+  - name: Add inventory 
+    tower_inventory:
+      name: "Provisioning Demo Inventory"
+      organization: "Default"
+      state: present
+  - name: Add Inventory Source using project's inventory file
+    tower_inventory_source:
+      name: Provisioning Demo Inventory
+      source: scm
+      source_project: Provisioning Demo
+      source_path: inventory
+      inventory: Provisioning Demo Inventory
+      update_on_project_update: yes

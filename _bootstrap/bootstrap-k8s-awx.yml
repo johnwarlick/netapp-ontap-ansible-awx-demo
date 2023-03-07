@@ -1,7 +1,6 @@
 ---
 - name: Install k0s so we can deploy newer AWX version
   hosts: localhost
-  become: true
   gather_facts: no
   tasks:
   - name: Check for k0s
@@ -22,7 +21,26 @@
     until: k0scontroller.status.ActiveState == "active"
     retries: 15
     delay: 20  
-    
+  - name: Install helm module dependencies 
+    pip:
+      name: 
+      - pyhelm
+      - grpcio
+      executable: pip3
+  - name: Install helm chart
+    helm:
+      host: localhost
+      chart:
+        name: awx-operator
+        version: 0.17.1
+        source:
+          type: repo
+          location: https://ansible.github.io/awx-operator
+      state: present
+      name: demo-awx-operator
+      namespace: awx-demo
+  
+
 # TODO: 
 # - Install AWX via operator 
 # - Set up project etc 
