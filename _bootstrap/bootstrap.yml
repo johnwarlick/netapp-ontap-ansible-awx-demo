@@ -1,5 +1,5 @@
 ---
-- name: Add venv config and bootstrap AWX w/ demo
+- name: Bootstrap AWX 
   hosts: localhost
   gather_facts: no
   collections:
@@ -16,22 +16,12 @@
       tower_host: "{{ tower_host }}"
       tower_username: "{{ tower_username }}"
       tower_password: "{{ tower_password }}"
-    when: 
   - name: Get tower CLI config file in place
     template:
       src: .tower_cli.cfg.j2
       dest: .tower_cli.cfg    
     vars: 
       tower_oauth_token: "{{ tower_token.token }}"  
-  - name: Create custom venv dir
-    community.docker.docker_container_exec:
-      container: awx_task
-      command: /bin/bash mkdir /opt/awx-demo-envs
-    register: result
-  - name: Add Custom VENV paths to Settings
-    tower_settings:
-      name: CUSTOM_VENV_PATHS
-      value: "/opt/awx-demo-envs"
   - name: Add Galaxy/Automation Hub Variable to Jobs -> Settings
     tower_settings:
       name: PRIMARY_GALAXY_URL
@@ -49,19 +39,19 @@
             type: string
             label: ONTAP Password
             secret: true 
-        injectors: 
-          extra_vars:
-            ontap_password: "{%raw%}{{ ontap_password }}{%endraw%}"
-            ontap_username: "{%raw%}{{ ontap_username }}{%endraw%}"
-        state: present    
+      injectors: 
+        extra_vars:
+          ontap_password: "{%raw%}{{ ontap_password }}{%endraw%}"
+          ontap_username: "{%raw%}{{ ontap_username }}{%endraw%}"
+      state: present    
   - name: Add ONTAP Admin Cluster credential
     tower_credential:
       name: ONTAP Admin
       credential_type: ONTAP Cluster Admin
       organization: Default
       inputs:
-        ontap_username: "{{ hostvars[groups['ontap_clusters'][0]]['ontap_username'] }}"
-        ontap_password: "{{ hostvars[groups['ontap_clusters'][0]]['ontap_password'] }}"
+        ontap_username: admin
+        ontap_password: "{{ lookup('env', 'ONTAP_PASSWORD') }}" 
   - name: Add this repo as a project in AWX
     tower_project:
       name: "Provisioning Demo"
