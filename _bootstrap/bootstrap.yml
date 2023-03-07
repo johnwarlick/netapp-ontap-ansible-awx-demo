@@ -9,25 +9,6 @@
     tower_username: admin
     tower_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"  
   tasks:
-  - name: Install virtualenv
-    pip:
-      name: virtualenv
-      executable: pip
-  - name: Ensure group "awx" exists
-    ansible.builtin.group:
-      name: awx
-      state: present
-  - name: Ensure user 'awx' exists
-    ansible.builtin.user:
-      name: awx
-      group: awx
-  - name: Create a directory if it does not exist
-    file:
-      path: /opt/awx-demo-envs
-      state: directory
-      mode: '0755'    
-      owner: awx
-      group: awx
   - name: Create a new token using username/password
     tower_token:
       scope: "write"
@@ -35,16 +16,22 @@
       tower_host: "{{ tower_host }}"
       tower_username: "{{ tower_username }}"
       tower_password: "{{ tower_password }}"
+    when: 
   - name: Get tower CLI config file in place
     template:
       src: .tower_cli.cfg.j2
       dest: .tower_cli.cfg    
     vars: 
-      tower_oauth_token: "{{ tower_token.token }}"
+      tower_oauth_token: "{{ tower_token.token }}"  
+  - name: Create custom venv dir
+    community.docker.docker_container_exec:
+      container: awx_task
+      command: /bin/bash mkdir /opt/awx-demo-envs
+    register: result
   - name: Add Custom VENV paths to Settings
     tower_settings:
       name: CUSTOM_VENV_PATHS
-      value: /opt/awx-demo-envs
+      value: "/opt/awx-demo-envs"
   - name: Add Galaxy/Automation Hub Variable to Jobs -> Settings
     tower_settings:
       name: PRIMARY_GALAXY_URL
