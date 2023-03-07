@@ -4,10 +4,8 @@ To get up and running quickly, ssh into the awx vm once your lab is up and run t
 
 `curl https://raw.githubusercontent.com/johnwarlick/netapp-ontap-ansible-awx-demo/main/_bootstrap/bootstrap.sh -o bootstrap.sh && bash bootstrap.sh`
 
-This lab contains a rather outdated version of AWX. This will install k0s, deploy a newer AWX, and set up the config/projects. 
-
 # TODO
-- Look into installing newer AWX on K0s 
+- This lab contains a rather outdated version of AWX. Look into installing newer AWX on K0s 
 - Put API calls to AWX in the mock provisioning app and make it load in the browser.
 - Add input masking / validation to mock provisioning app 
 
