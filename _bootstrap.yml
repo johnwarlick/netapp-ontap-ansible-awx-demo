@@ -22,6 +22,7 @@
     until: k0scontroller.status.ActiveState == "active"
     retries: 15
     delay: 20  
+    
 # TODO: 
 # - Install AWX via operator 
 # - Set up project etc 
