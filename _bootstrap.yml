@@ -1,0 +1,27 @@
+---
+- name: Install k0s so we can deploy newer AWX version
+  hosts: localhost
+  become: true
+  gather_facts: no
+  tasks:
+  - name: Check for k0s
+    command: k0s --version
+    register: k0s
+  - name: Run installer if not there
+    shell: $ curl -sSLf https://get.k0s.sh | sudo sh
+    when: k0s is false
+  - name: Install k0s if not there
+    command: k0s install controller --single
+    when: k0s is false
+  - name: Install k0s as a service and enable on reboot 
+    systemd:
+      state: started
+      name: k0scontroller
+      enabled: true
+    register: k0scontroller
+    until: k0scontroller.status.ActiveState == "active"
+    retries: 15
+    delay: 20  
+# TODO: 
+# - Install AWX via operator 
+# - Set up project etc 
