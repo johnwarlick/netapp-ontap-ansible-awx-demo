@@ -1,6 +1,6 @@
 ---
 - name: Deploy mock provisioning app
-  hosts: localhost
+  hosts: awx
   gather_facts: no
   connection: 'local'
   tasks:

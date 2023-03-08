@@ -3,3 +3,5 @@
 [lab_ontap_clusters]
 cluster1 ontap_hostname=cluster1.demo.netapp.com
 cluster2 ontap_hostname=cluster2.demo.netapp.com
+
+awx ansible_host=awx.demo.netapp.com
