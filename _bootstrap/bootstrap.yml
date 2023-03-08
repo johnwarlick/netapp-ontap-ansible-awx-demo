@@ -8,6 +8,10 @@
     tower_host: http://awx.demo.netapp.com
     tower_username: admin
     tower_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"  
+    project_name: Provisioning Demo
+    inventory_name: "{{ project_name }} Inventory"
+    organization: Default
+
   tasks:
   - name: Create a new token using username/password
     tower_token:
@@ -54,23 +58,35 @@
         ontap_password: "{{ lookup('env', 'ONTAP_PASSWORD') }}" 
   - name: Add this repo as a project in AWX
     tower_project:
-      name: "Provisioning Demo"
+      name: "{{ project_name }}"
       description: "For demoing ONTAP provisioning workflows in Ansible"
-      organization: "Default"
+      organization: "{{ organization }}"
       scm_type: git
       scm_url: https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo
       scm_update_on_launch: yes
       state: present
   - name: Add inventory 
     tower_inventory:
-      name: "Provisioning Demo Inventory"
-      organization: "Default"
+      name: "{{ inventory_name }}"
+      organization: "{{ organization }}"
       state: present
   - name: Add Inventory Source using project's inventory file
     tower_inventory_source:
-      name: Provisioning Demo Inventory
+      name: "{{ inventory_name }}"
       source: scm
-      source_project: Provisioning Demo
+      source_project: "{{ project_name }}"
       source_path: inventory
-      inventory: Provisioning Demo Inventory
+      inventory: "{{ inventory_name }}"
       update_on_project_update: yes
+  - name: Add Create Volume job template 
+    tower_job_template:
+      name: "Create Volume"
+      job_type: "run"
+      ask_limit_on_launch: yes
+      ask_variables_on_launch: yes
+      inventory: "{{ inventory_name }}"
+      project: "{{ project_name }}"
+      playbook: "create_volume.yml"
+      credentials:
+        - "ONTAP Admin"
+      state: "present"
