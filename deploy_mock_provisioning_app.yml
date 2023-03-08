@@ -4,6 +4,9 @@
   gather_facts: no
   connection: 'local'
   tasks:
+  - name: Install python modules
+    pip: 
+      requirements: requirements.txt
   - name: Deploy mock provisioning app
     docker_compose:
       project_src: mock-provisioning-app
