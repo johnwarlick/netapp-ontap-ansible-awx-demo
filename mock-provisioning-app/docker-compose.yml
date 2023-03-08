@@ -1,9 +1,8 @@
-version: '3'
+version: '3'  
 services:
-  web:
-    image: mock-provisioning-site
-    build: .
-    container_name: mock-provisioning-site
-    restart: always
+  api:
+    build: ./api
+    volumes:
+      - ./api/html:/var/www/html 
     ports:
-      - "8080:80"
+      - 8080:80

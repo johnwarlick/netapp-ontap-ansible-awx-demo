@@ -1,0 +1,27 @@
+header {
+    padding: 1em;
+    color: rgb(21, 52, 117);
+}
+
+#logo {
+    height: 75px;
+    margin: .25em;
+}
+
+main {
+    max-width: 500px !important;
+}
+.accordion-header {
+    width: 100%;
+}
+.accordion-button {
+    text-align: center;
+    padding: .25em;
+}
+
+.accordion-button img {
+    max-height: 30px;
+    width: 25px;
+    margin: .25em .5em .25em .25em;
+}
+
