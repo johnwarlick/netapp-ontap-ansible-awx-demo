@@ -2,7 +2,6 @@
 - name: Deploy mock provisioning app
   hosts: awx
   gather_facts: no
-  connection: 'local'
   tasks:
   - name: Install python modules
     pip: 
