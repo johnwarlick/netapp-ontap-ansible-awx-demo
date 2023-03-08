@@ -1,3 +1,5 @@
+docker-compose
+PyYAML
 netapp-lib
 azure-storage-blob
 awxkit
