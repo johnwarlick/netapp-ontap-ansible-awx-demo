@@ -1,0 +1,10 @@
+services:
+  app:
+    container_name: mock-provisioning-app
+    image: mock-provisioning-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080" 
