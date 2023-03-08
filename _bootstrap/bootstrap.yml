@@ -56,6 +56,14 @@
       inputs:
         ontap_username: admin
         ontap_password: "{{ lookup('env', 'ONTAP_PASSWORD') }}" 
+  - name: Add AWX host credential
+    tower_credential:
+      name: AWX Host
+      credential_type: Machine
+      organization: Default
+      inputs:
+        username: root
+        password: "{{ tower_password }}" 
   - name: Add this repo as a project in AWX
     tower_project:
       name: "{{ project_name }}"

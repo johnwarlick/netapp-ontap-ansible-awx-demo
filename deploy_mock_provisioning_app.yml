@@ -6,6 +6,7 @@
   - name: Install python modules
     pip: 
       requirements: requirements.txt
+      virtualenv: /root/bootstrap
   - name: Deploy mock provisioning app
     docker_compose:
       project_src: mock-provisioning-app
