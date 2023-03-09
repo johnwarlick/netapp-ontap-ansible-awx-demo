@@ -4,6 +4,7 @@
   gather_facts: no
   collections:
     - awx.awx
+    - community.docker
   vars: 
     tower_host: http://awx.demo.netapp.com
     tower_username: admin
@@ -11,7 +12,11 @@
     project_name: Provisioning Demo
     inventory_name: "{{ project_name }} Inventory"
     organization: Default
-
+    config: 
+      - file: .tower_cli.cfg
+        path: 
+      - file: .emv
+        path: app
   tasks:
   - name: Create a new token using username/password
     tower_token:
@@ -20,12 +25,14 @@
       tower_host: "{{ tower_host }}"
       tower_username: "{{ tower_username }}"
       tower_password: "{{ tower_password }}"
-  - name: Get tower CLI config file in place
+  - name: Get tower CLI config file + provisioning app .env file in place
     template:
-      src: .tower_cli.cfg.j2
-      dest: .tower_cli.cfg    
+      src: "{{ item.file }}.j2"
+      dest: "{{ item.path }}.cfg"    
     vars: 
       tower_oauth_token: "{{ tower_token.token }}"  
+    loop: 
+      - "{{ config }}"
   - name: Add Galaxy/Automation Hub Variable to Jobs -> Settings
     tower_settings:
       name: PRIMARY_GALAXY_URL
@@ -88,7 +95,7 @@
       update_on_project_update: yes
   - name: Add Create Volume job template 
     tower_job_template:
-      name: "Create Volume"
+      name: "ontap_create_volume"
       job_type: "run"
       ask_limit_on_launch: yes
       ask_variables_on_launch: yes
@@ -98,3 +105,9 @@
       credentials:
         - "ONTAP Admin"
       state: "present"
+  - name: Start provisioning app
+    community.docker.docker_compose:
+      project_src: app
+    register: docker_output
+  - ansible.builtin.debug:
+      var: docker_output
