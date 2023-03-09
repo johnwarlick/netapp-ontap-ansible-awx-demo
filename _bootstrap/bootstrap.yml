@@ -15,7 +15,7 @@
     config: 
       tower_cli: 
         file: .tower_cli.cfg
-        path: "{{ playbook_dir }}/"
+        path: 
       env:
         file: .env
         path: "{{ playbook_dir }}/app/"
