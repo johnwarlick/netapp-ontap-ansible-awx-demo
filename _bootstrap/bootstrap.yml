@@ -18,7 +18,7 @@
         path: /
       env:
         file: .env
-        path: /app
+        path: /app/
   tasks:
   - name: Create a new token using username/password
     tower_token:
