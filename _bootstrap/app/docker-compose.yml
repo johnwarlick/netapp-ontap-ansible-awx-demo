@@ -1,9 +1,11 @@
 version: '3'  
 services:
   api:
-    build: ./api
+    build: ./api/lib
     volumes:
-      - ./api:/var/www
+      - ./api/lib:/var/www/lib
+      - ./api/html:/var/www/html
     ports:
       - 8080:80
-    command: composer require tcdent/php-restclient vlucas/phpdotenv && composer install
+
+

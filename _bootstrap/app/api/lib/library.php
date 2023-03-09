@@ -1,5 +1,5 @@
 <?php 
-require 'vendor/autoload.php';
+// TODO: figure out how the heck to get vendor folder to not be overwritten 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 

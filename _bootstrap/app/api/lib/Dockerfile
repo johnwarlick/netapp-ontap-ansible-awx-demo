@@ -12,4 +12,6 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-install zip
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN mkdir /var/www/composer && cd /var/www/composer \
+    && composer require tcdent/php-restclient vlucas/phpdotenv && composer install
 
