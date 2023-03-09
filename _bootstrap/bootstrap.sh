@@ -2,7 +2,7 @@
 cd /root
 git clone https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo.git
 # This Centos8 is busted so we gotta fix dnf first
-yes | \cp -rf netapp-ontap-ansible-awx-demo/_bootstrap/CentOS-Base.repo /etc/yum.repos.d
+yes | \cp -rf netapp-ontap-ansible-awx-demo/_bootstrap/CentOS-Base.repo /etc/yum.repos.d/
 rpm --rebuilddb
 # 3.9 gives an error I don't have time to dive into right now 
 dnf install python3.8 -y
