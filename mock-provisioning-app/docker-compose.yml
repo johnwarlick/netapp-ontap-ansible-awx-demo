@@ -3,6 +3,6 @@ services:
   api:
     build: ./api
     volumes:
-      - ./api/html:/var/www/html 
+      - ./api:/var/www
     ports:
       - 8080:80

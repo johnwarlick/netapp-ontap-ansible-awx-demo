@@ -5,7 +5,8 @@ $(document).delegate('form', 'submit', function(e) {
     var $form = $(this);
     // add our general info with the storage type 
     var submit = $("#general").serialize();
-    submit = submit+$form.serialize();
+    submit = submit+$form.serialize()+"&type="+$form.attr('id');
+    console.log(submit);
     $.post( "api.php", submit)
         .always(function(response) {
             var class_name = "danger";

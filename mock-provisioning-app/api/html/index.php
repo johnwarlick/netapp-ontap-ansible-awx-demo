@@ -14,13 +14,11 @@
         <h1><img id="logo" src="img/logoipsum-249.svg" alt="https://logoipsum.com/artwork/249"><br>New Storage Request</h1>
       </div>
     </header>
-
     <main class="container">
-
       <form id="general">
           <div class="mb-3">
-            <label for="team" class="form-label">Business Unit</label>
-            <select class="form-select" name="team" aria-label="" required>
+            <label for="business-unit" class="form-label">Business Unit</label>
+            <select class="form-select" name="business-unit" aria-label="" required>
                 <option value="finance">Finance</option>
                 <option value="accounting">Accounting</option>
                 <option value="marketing">Marketing</option>
