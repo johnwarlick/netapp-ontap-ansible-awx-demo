@@ -13,10 +13,12 @@
     inventory_name: "{{ project_name }} Inventory"
     organization: Default
     config: 
-      - file: .tower_cli.cfg
-        path: 
-      - file: .emv
-        path: app
+      tower_cli: 
+        file: .tower_cli.cfg
+        path: /
+      env:
+        file: .env
+        path: /app
   tasks:
   - name: Create a new token using username/password
     tower_token:
@@ -25,14 +27,18 @@
       tower_host: "{{ tower_host }}"
       tower_username: "{{ tower_username }}"
       tower_password: "{{ tower_password }}"
-  - name: Get tower CLI config file + provisioning app .env file in place
+  - name: Get tower CLI config file
     template:
-      src: "{{ item.file }}.j2"
-      dest: "{{ item.path }}.cfg"    
+      src: "{{ config.tower_cli.file }}.j2"
+      dest: "{{ config.tower_cli.path }}{{ config.tower_cli.file }}"    
     vars: 
       tower_oauth_token: "{{ tower_token.token }}"  
-    loop: 
-      - "{{ config }}"
+  - name: Get mock provisioning app .env config file
+    template:
+      src: "{{ config.env.file }}.j2"
+      dest: "{{ config.env.path }}{{ config.env.file }}"    
+    vars: 
+      tower_oauth_token: "{{ tower_token.token }}"  
   - name: Add Galaxy/Automation Hub Variable to Jobs -> Settings
     tower_settings:
       name: PRIMARY_GALAXY_URL
@@ -105,6 +111,9 @@
       credentials:
         - "ONTAP Admin"
       state: "present"
+  - name: Install docker-compose 
+    ansible.builtin.pip:
+      name: docker-compose
   - name: Start provisioning app
     community.docker.docker_compose:
       project_src: app
