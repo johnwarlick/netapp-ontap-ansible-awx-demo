@@ -1,6 +1,10 @@
 <?php 
 header('Content-Type: application/json');
 
+require(__DIR__ . '/../library.php');
+exit;
+
+
 response(200,"Hello World",$_POST);
 
 function response($status,$message,$data="")

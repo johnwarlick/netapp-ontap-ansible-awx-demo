@@ -15,10 +15,10 @@
     config: 
       tower_cli: 
         file: .tower_cli.cfg
-        path: /
+        path: "{{ playbook_dir }}/"
       env:
         file: .env
-        path: /app/
+        path: "{{ playbook_dir }}/app/"
   tasks:
   - name: Create a new token using username/password
     tower_token:

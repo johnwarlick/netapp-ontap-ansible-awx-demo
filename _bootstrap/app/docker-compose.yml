@@ -6,3 +6,4 @@ services:
       - ./api:/var/www
     ports:
       - 8080:80
+    command: composer require tcdent/php-restclient vlucas/phpdotenv && composer install
