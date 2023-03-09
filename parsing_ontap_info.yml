@@ -1,0 +1,31 @@
+---
+- name: Examples of different ways to tame na_ontap_info
+  hosts: "{{ ansible_limit }}"
+  gather_facts: no
+  connection: 'local'
+  collections:
+    - netapp.ontap
+  vars: 
+    ports_example: [e0a, e0b, e0c, e0d]
+  tasks:
+  - name: Let's grab all the info to start
+    include_tasks: tasks/ontap_get_cluster_info.yml
+  - name: Grab the first (non-root) aggr using Jinja2
+    debug: 
+      msg: "{{ (ontap_info.aggregate_info | dict2items | map(attribute='value') | selectattr('aggr_raid_attributes.is_root_aggregate', 'equalto', 'false') | list | first).aggregate_name }}"
+  - name: Say we neeed to find the least utilized aggregate from the cluster? Custom filters make it easier See /filter_plugins/ontap_filters.py  
+    set_fact:
+      least_utilized_aggr: "{{ ontap_info.aggregate_info | ontap_least_utilized_aggr }}" 
+      least_utilized_space: "{{ ontap_info.aggregate_info | dict2items | map(attribute='value') | selectattr('aggr_raid_attributes.is_root_aggregate', 'equalto', 'false') | map(attribute='aggr_space_attributes.size_available') | max }}"
+  - name: Display least_utilized_aggr fact from our custom filter 
+    debug:
+      msg: The least utilized aggregate is '{{ least_utilized_aggr }}'
+  - name: Let's get a list of all the (data) SVMs in the cluster using custom filter
+    debug: 
+      msg: ontap_info.vserver_info | ontap_svm_names
+  - name: Show Admin and Node SVMs by passing a list of types to custom filter
+    debug: 
+      var: ontap_info.vserver_info | ontap_svm_names(['admin','node'])
+  - name: Get full port name from list of short names using 'ontap_full_port_names' custom filter
+    debug: 
+      msg: "{{ ports_example }} becomes {{ ontap_info.net_port_info | ontap_full_port_names(ports_example) }}" 

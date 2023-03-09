@@ -1,7 +1,7 @@
-docker-compose
 PyYAML
 netapp-lib
 azure-storage-blob
 awxkit
+ansible
 ansible[azure]
 jmespath

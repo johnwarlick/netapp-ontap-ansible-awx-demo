@@ -1,5 +1,5 @@
 ---
 collections:
-  - name: netapp.ontap
+  - name: netapp.ontap:20.2.0
   - name: ansible.posix
-  - name: awx.awx
+  - name: awx.awx:17.0.0
