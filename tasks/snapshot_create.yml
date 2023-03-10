@@ -1,0 +1,13 @@
+- name: create SnapShot
+  netapp.ontap.na_ontap_snapshot:
+    state: present
+    snapshot: "{{ snapshot_name }}"
+    volume: "{{ vol }}"
+    vserver: "{{ svm }}"
+    comment: "{{ snapshot_comment | default(omit) }}"
+    expiry_time: "{{ snapshot_expiry_time | default(omit) }}" #i.e. "2022-02-04T14:00:00-05:00"
+    username: "{{ ontap_username }}"
+    password: "{{ ontap_password }}"
+    hostname: "{{ ontap_hostname }}"
+    https: "{{ https }}"
+    validate_certs: "{{ validate_certs }}"

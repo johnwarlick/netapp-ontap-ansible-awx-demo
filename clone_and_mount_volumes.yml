@@ -11,7 +11,7 @@
       vols: ['test', 'test2']
       fields: ['nas.path','aggregates']
   tasks:
-  - name: Let's grab those volumes 
+  - name: Get volume(s) by name from svm(s) specified 
     include_tasks: tasks/ontap_get_cluster_info_rest.yml
     vars: 
       gather_subset: ['storage/volumes']
@@ -19,6 +19,10 @@
         name: "{{ clone_and_mount_volumes.vols | join(',')}}"
         svm: "{{ clone_and_mount_volumes.svms  | join(',')}}"
       fields: "{{ clone_and_mount_volumes.fields }}"
-  - name: Let's see what we get
+  - name: Examine results
     debug: 
-      msg: "{{ ontap_rest_info }}"
+      var: ontap_rest_info['storage/volumes']['records']
+  # 1. Create a snapshot
+  # 2. Unmount the volume
+  # 3. Clone the volume 
+  # 4. Mount the clone with the original volume's junction path
