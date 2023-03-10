@@ -1,0 +1,24 @@
+---
+- name: Clone one or more volumes and mount the clone on original junction path
+  hosts: "{{ ansible_limit }}"
+  gather_facts: no
+  connection: 'local'
+  collections:
+    - netapp.ontap
+  vars: 
+    clone_and_mount_volumes: 
+      svms: ['svm1'] 
+      vols: ['test', 'test2']
+      fields: ['nas.path','aggregates']
+  tasks:
+  - name: Let's grab those volumes 
+    include_tasks: tasks/ontap_get_cluster_info_rest.yml
+    vars: 
+      gather_subset: ['storage/volumes']
+      parameters: 
+        name: "{{ clone_and_mount_volumes.vols | join(',')}}"
+        svm: "{{ clone_and_mount_volumes.svms  | join(',')}}"
+      fields: "{{ clone_and_mount_volumes.fields }}"
+  - name: Let's see what we get
+    debug: 
+      msg: "{{ ontap_rest_info }}"
