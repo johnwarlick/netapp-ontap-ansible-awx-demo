@@ -7,7 +7,7 @@ $(document).delegate('form', 'submit', function(e) {
     var submit = $("#general").serialize();
     submit = submit+$form.serialize()+"&type="+$form.attr('id');
     console.log(submit);
-    $.post( "api.php", submit)
+    $.post( "http://localhost:8000", submit)
         .always(function(response) {
             var class_name = "danger";
             var message = "The API is currently unavailble";

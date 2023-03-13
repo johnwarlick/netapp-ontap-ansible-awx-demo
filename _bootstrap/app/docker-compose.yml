@@ -1,11 +1,22 @@
 version: '3'  
 services:
   api:
-    build: ./api/lib
-    volumes:
-      - ./api/lib:/var/www/lib
-      - ./api/html:/var/www/html
+    build: ./api
+    container_name: api
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload-dir "/app" --reload
+    environment:
+      PORT: 8000
+      DEBUG: 1
+      WATCHFILES_FORCE_POLLING: true
     ports:
-      - 8080:80
-
-
+      - '8000:8000'
+    restart: "no"
+    volumes:
+      - ./api:/app
+    restart: on-failure
+  web:
+    image: nginx
+    ports:
+        - 8080:80
+    volumes:
+        - ./html:/usr/share/nginx/html

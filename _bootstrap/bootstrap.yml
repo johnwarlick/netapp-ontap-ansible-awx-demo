@@ -18,7 +18,7 @@
         path: ~/
       env:
         file: .env
-        path: "{{ playbook_dir }}/app/lib"
+        path: "{{ playbook_dir }}/app/api"
   tasks:
   - name: Create a new token using username/password
     tower_token:
