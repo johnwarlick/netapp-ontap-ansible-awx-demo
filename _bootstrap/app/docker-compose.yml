@@ -7,7 +7,7 @@ services:
     environment:
       PORT: 8000
       DEBUG: 1
-      WATCHFILES_FORCE_POLLING: true
+      WATCHFILES_FORCE_POLLING: "true"
     ports:
       - '8000:8000'
     restart: "no"
