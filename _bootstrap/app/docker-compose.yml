@@ -10,7 +10,6 @@ services:
       WATCHFILES_FORCE_POLLING: "true"
     ports:
       - '8000:8000'
-    restart: "no"
     volumes:
       - ./api:/app
     restart: on-failure
