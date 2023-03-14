@@ -1,6 +1,9 @@
-from fastapi import FastAPI
+from typing import Union
+from fastapi import Request,FastAPI
+from fastapi.encoders import jsonable_encoder
 from fastapi.middleware.cors import CORSMiddleware
 from decouple import config
+from pydantic import BaseModel
 
 API_USERNAME = config('TOWER_USERNAME')
 API_PASSWORD = config('TOWER_PASSWORD')
@@ -22,10 +25,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+def api_return(status,message,data):
+    return {"status": status, "message": message, "data": data}
+
 @app.get("/")
 def docs():
-    return {"status": 200, "message": "OK", "data": "Welcome to the API. Documentation is at /docs"}
+    welcome = "Welcome to the API. Documentation is at /docs"
+    return api_return(200,"OK",welcome)
 
-@app.post("/")
-def hello_world():
-    return {"status": 200, "message": "OK", "data": "Hello World"}
+class Volume(BaseModel):
+    volume: str
+    size: str
+    unit: str
+    protocol: str
+
+@app.post("/test")
+def test():
+    return api_return(200,"OK","Test")
+
+@app.post("/storage/file")
+def create_volume(volume: Volume):
+    return api_return(200,"OK",volume.__dict__)
+
+    
+
+
