@@ -1,3 +1,5 @@
+const api_base_url = location.protocol + '//' + location.hostname + ":8000";
+
 // We're just gonna pass off all the data to the API
 $(document).delegate('form', 'submit', function(e) {
     e.stopImmediatePropagation();
@@ -7,10 +9,11 @@ $(document).delegate('form', 'submit', function(e) {
     var submit = $("#general").serialize();
     submit = submit+$form.serialize()+"&type="+$form.attr('id');
     console.log(submit);
-    $.post( "http://localhost:8000", submit)
+    $.post( api_base_url, submit)
         .always(function(response) {
             var class_name = "danger";
             var message = "The API is currently unavailble";
+            console.log(api_base_url)
             if(parseInt(response.status)==200) {
                 class_name = "success";
                 message = response.message;
