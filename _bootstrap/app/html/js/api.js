@@ -1,59 +1,42 @@
-const api_base_url = location.protocol + '//' + location.hostname + ":8000";
+const api_base_url = location.protocol + '//' + location.hostname + ":8000/storage/";
 
-// We're just gonna pass off all the data to the API
 $(document).delegate('form', 'submit', function(e) {
     e.stopImmediatePropagation();
     e.preventDefault();
     var $form = $(this);
     type = $form.attr('id');
-    (async () => {
-        //const response = await fetch(api_base_url+'/test', {
-        const response = await fetch(api_base_url+'/storage/'+type, {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          mode: "cors",
-          credentials: "same-origin",
-          body: JSON.stringify({name: "Test", size: 1.25, unit: 'tb', protocol: 'cifs'})
-        });
-        const resp = await response;
-        console.log(resp);
-        var status = parseInt(resp.status);
-        var message = resp.statusText;
-        var body = resp.body;
-        var class_name = "success";
-        if (status >=400) {
-            class_name = "danger";
-        }
-        $form.children('.feedback').removeClass('d-none')
-            .addClass("alert-"+class_name).html(status+': '+message); 
-    })();
-    // var $form = $(this);
-    // // add our general info with the storage type 
-    // var submit = $("#general").serialize();
-    // submit = submit+'&'+$form.serialize();
-    // type = $form.attr('id');
-    // console.log(submit);
-    // $.post({
-    //     url: api_base_url+'/storage/'+type, 
-    //     data: submit, 
-    //     dataType: 'json',
-    // }).always(function(response) {
-    //     var class_name = "danger";
-    //     console.log(response);
-    //     message = response.statusText;
-    //     var status = parseInt(response.status);
-    //     // var message = "The API is currently unavailble";
-    //     // if(response.message) {
-    //     //     message = response.message;
-    //     // }
-    //     // if(status==200) {
-    //     //     class_name = "success";
-    //     // }
-    //     $form.children('.feedback').removeClass('d-none')
-    //             .addClass("alert-"+class_name).html(status+': '+message); 
-    // });
 
+    // Make Form JSON Again 
+    var rawdata = $form.serializeArray();
+    var json = {};
+
+    $.map(rawdata, function(n, i){
+        json[n['name']] = n['value'];
+    });
+
+    // Hit the right API based on request type
+    fetch(api_base_url+type, {
+      method: "post",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },    
+      mode: "cors",
+      credentials: "same-origin",
+      body: JSON.stringify(json),
+    })
+    .then(response => response.json()) 
+    // Look the javascript is not the point of this demo ok, 
+    // don't judge me
+    .then(json => {
+      var class_name = "danger";
+      var status = parseInt(json.status);
+      var message = json.message;
+      var response = json.data;
+      if(status<400 && status >=200) {
+        class_name = "success";
+      }
+      $form.children('.feedback').removeClass('d-none')
+          .addClass("alert-"+class_name).html(status+': '+message+'<br/>'+response); 
+    });    
 });

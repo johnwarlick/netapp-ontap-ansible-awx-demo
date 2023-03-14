@@ -39,14 +39,14 @@ class Volume(BaseModel):
     unit: str
     protocol: str
 
-@app.post("/test")
-def test():
-    return api_return(200,"OK","Test")
-
 @app.post("/storage/file")
 def create_volume(volume: Volume):
-    return api_return(200,"OK",volume.__dict__)
+    return api_return(202,"In Development","This API is currently being developed")
 
-    
+@app.post("/storage/block")
+def create_lun():
+    return api_return(404,"Not Found","This API has not been developed yet")
 
-
+@app.post("/storage/object")
+def create_bucket():
+    return api_return(404,"Not Found","This API has not been developed yet")
