@@ -7,6 +7,7 @@
     - community.docker
   vars: 
     tower_host: http://awx.demo.netapp.com
+    tower_api_base: "{{ tower_host }}/api/v2/"
     tower_username: admin
     tower_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"  
     project_name: Provisioning Demo
