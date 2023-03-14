@@ -117,6 +117,7 @@
   - name: Start provisioning app
     community.docker.docker_compose:
       project_src: app
+      build: true
     register: docker_output
   - ansible.builtin.debug:
       var: docker_output
