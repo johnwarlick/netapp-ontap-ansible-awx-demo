@@ -14,8 +14,12 @@ pip install --upgrade pip setuptools
 pip install ansible requests docker
 # This lab has a pretty old AWX install
 ansible-galaxy collection install awx.awx:17.0.0 
-read -s -p "Password for AWX: " TOWER_PASS
-read -s -p "Password for ONTAP Clusters: " ONTAP_PASS
+if [ x"${TOWER_PASS}" == "x" ]; then 
+    read -s -p "Password for AWX: " TOWER_PASS
+fi
+if [ x"${ONTAP_PASS}" == "x" ]; then 
+    read -s -p "Password for ONTAP Clusters: " ONTAP_PASS
+fi
 export ONTAP_PASSWORD=$ONTAP_PASS
 export TOWER_PASSWORD=$TOWER_PASS
 cd netapp-ontap-ansible-awx-demo/_bootstrap
