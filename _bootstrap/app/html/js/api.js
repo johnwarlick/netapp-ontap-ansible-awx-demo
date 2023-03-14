@@ -8,6 +8,8 @@ $(document).delegate('form', 'submit', function(e) {
 
     // Make Form JSON Again 
     var rawdata = $form.serializeArray();
+    var rawgeneral = $("#general").serializeArray();
+    rawdata = rawdata.concat(rawgeneral);
     var json = {};
 
     $.map(rawdata, function(n, i){
