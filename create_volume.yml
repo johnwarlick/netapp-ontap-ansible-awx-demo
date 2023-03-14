@@ -34,3 +34,5 @@
       msg: "The current volumes are {{ current_volumes }} so the new volume should be {{ vol_name }}"
   - name: Create '{{ original_vol_name }}' w/ increment appended in least utilized aggr
     include_tasks: tasks/volume_create.yml
+    vars:
+      vol: "{{ vol_name }}"
