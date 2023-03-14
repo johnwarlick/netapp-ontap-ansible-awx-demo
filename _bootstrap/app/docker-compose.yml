@@ -12,6 +12,8 @@ services:
     volumes:
       - ./api:/app
     restart: on-failure
+    env_file: 
+      - ./api/.env
   web:
     image: nginx
     ports:
