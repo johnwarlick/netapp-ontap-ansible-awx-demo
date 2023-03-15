@@ -84,7 +84,7 @@
       description: "For demoing ONTAP provisioning workflows in Ansible"
       organization: "{{ organization }}"
       scm_type: git
-      scm_url: https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo
+      scm_url: https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo.git
       scm_update_on_launch: yes
       state: present
   - name: Add inventory 
