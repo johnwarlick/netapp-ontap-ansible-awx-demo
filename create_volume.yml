@@ -6,7 +6,7 @@
   collections:
     - netapp.ontap
   vars:
-    vol_name: Test
+    volume: Test
     svm: svm1
   tasks:
   - name: Get aggr and volume info
@@ -24,8 +24,8 @@
   - name: Calculate new volume name using custom filter plugin.
     set_fact:
       # The default increment of 1 can be overriden by passing increment=n to filter as the second parameter
-      original_vol_name: "{{ vol_name }}"
-      vol_name: "{{ vol_name | ontap_volume_name_increment(ontap_info.volume_info) }}"
+      original_vol_name: "{{ volume }}"
+      vol_name: "{{ volume | ontap_volume_name_increment(ontap_info.volume_info) }}"
   - name: Show Least Utilized Aggregate
     debug: 
       var: aggr 
@@ -35,4 +35,5 @@
   - name: Create '{{ original_vol_name }}' w/ increment appended in least utilized aggr
     include_tasks: tasks/volume_create.yml
     vars:
-      vol: "{{ vol_name }}"
+      vol_size: "{{ size }}"
+      vol_size_unit: "{{ unit }}"

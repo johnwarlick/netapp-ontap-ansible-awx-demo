@@ -1,7 +1,7 @@
 - name: Determine least utilized aggregate 
   include_tasks: tasks/aggr_determine_least_utilized.yml 
   when: aggr is not defined 
-- name: Create Volume '{{ vol }}'
+- name: Create Volume '{{ vol_name }}'
   netapp.ontap.na_ontap_volume:
     state: present
     name: "{{ vol_name }}"
