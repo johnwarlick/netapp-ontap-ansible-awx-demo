@@ -15,12 +15,12 @@
       gather_subset: [aggregate_info, volume_info]
   - name: > 
         Use custom filter plugins to a) calculate least utilized aggregate b) get list of SVMs 
-        c) get list of matching volumes for {{ vol }}
+        c) get list of matching volumes for {{ volume }}
     set_fact:
       aggr: "{{ ontap_info.aggregate_info | ontap_least_utilized_aggr }}"
       # In addition to exact match, you could pass contains=volume_name to grab any volumes that contain the name
       # You can also include root volumes by passing root_volumes=true
-      current_volumes: "{{ ontap_info.volume_info | ontap_volume_names(vol_name) }}"     
+      current_volumes: "{{ ontap_info.volume_info | ontap_volume_names(volume) }}"     
   - name: Calculate new volume name using custom filter plugin.
     set_fact:
       # The default increment of 1 can be overriden by passing increment=n to filter as the second parameter

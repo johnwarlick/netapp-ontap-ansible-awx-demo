@@ -36,10 +36,10 @@ def check_job(id):
     if job.status_code == 200:
         code = 202
         status = results['status']
-        data = results['id']
+        data = 'Job ID '+str(results['id'])
 
         if status in  ["failed", "error", "canceled"]:
-            data = results['job_explanation']
+            data += results['job_explanation']
             code = 400
 
         if status == "successful":
