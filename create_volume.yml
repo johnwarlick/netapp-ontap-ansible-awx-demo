@@ -35,5 +35,6 @@
   - name: Create '{{ original_vol_name }}' w/ increment appended in least utilized aggr
     include_tasks: tasks/volume_create.yml
     vars:
+      vol_name: "{{ vol_name }}"
       vol_size: "{{ size }}"
       vol_size_unit: "{{ unit }}"
