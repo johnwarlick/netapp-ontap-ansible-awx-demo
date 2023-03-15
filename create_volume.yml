@@ -25,16 +25,16 @@
     set_fact:
       # The default increment of 1 can be overriden by passing increment=n to filter as the second parameter
       original_vol_name: "{{ volume }}"
-      vol_name: "{{ volume | ontap_volume_name_increment(ontap_info.volume_info) }}"
+      new_vol_name: "{{ volume | ontap_volume_name_increment(ontap_info.volume_info) }}"
   - name: Show Least Utilized Aggregate
     debug: 
       var: aggr 
   - name: Show Current Volumes and Calculated Volume Name w/ Increment  
     debug: 
-      msg: "The current volumes are {{ current_volumes }} so the new volume should be {{ vol_name }}"
+      msg: "The current volumes are {{ current_volumes }} so the new volume should be {{ new_vol_name }}"
   - name: Create '{{ original_vol_name }}' w/ increment appended in least utilized aggr
     include_tasks: tasks/volume_create.yml
     vars:
-      vol_name: "{{ vol_name }}"
+      vol_name: "{{ new_vol_name }}"
       vol_size: "{{ size }}"
       vol_size_unit: "{{ unit }}"
