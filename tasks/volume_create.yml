@@ -10,7 +10,7 @@
     size: "{{ vol_size | default (default_vol_size)}}"
     size_unit: "{{ vol_size_unit | default (default_vol_size_unit) }}"
     policy: "{{ vol_policy | default(omit) }}"
-    junction_path: "{{ omit if vol_type is defined and vol_type == 'DP' else vol_junction_path | default('/'+vol) }}"
+    junction_path: "{{ omit if vol_type is defined and vol_type == 'DP' else vol_junction_path | default('/'+vol_name) }}"
     hostname: "{{ ontap_hostname }}"
     type: "{{ vol_type | default(omit) }}"
     username: "{{ ontap_username }}"
