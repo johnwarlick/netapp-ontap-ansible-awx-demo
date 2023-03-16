@@ -36,21 +36,17 @@ def check_job(id):
     if job.status_code == 200:
         code = 202
         status = results['status']
-        data = 'Job ID '+str(results['id'])
+        job_id = results['id']
 
         if status in  ["failed", "error", "canceled"]:
-            data += results['job_explanation']
             code = 400
 
         if status == "successful":
             code = 200
-            data = results['job_explanation']
 
-        return api_return(code, status, data)
+        return api_return(code, status, job_id)
 
     return api_return(job.status_code,"Error",str(results))
-
-
 
 @app.post("/storage/file")
 def create_volume(volume: lib.Volume):
@@ -58,7 +54,7 @@ def create_volume(volume: lib.Volume):
     results = job.json()
 
     if job.status_code == 201:    
-        return api_return(job.status_code, 'Provisioning Job Started', results['id'])
+        return api_return(job.status_code, 'Starting', results['id'])
     
     return api_return(job.status_code,"Error",str(results))
 

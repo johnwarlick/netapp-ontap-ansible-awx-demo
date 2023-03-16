@@ -46,6 +46,9 @@ $(document).delegate('form', 'submit', function(e) {
         // check every couple seconds until we get the success or fail
         spinner($form,true);
         fetchJobStatus(job_id, $form);
+        $form.children('.feedback').removeClass('d-none')
+        .addClass("alert-"+class_name).html('<p>Provisioning Request #'+job_id+' successfully submitted.</p>'); 
+  
       }
     });    
 
@@ -80,16 +83,19 @@ function fetchJobStatus(id, $form) {
     } else {
       spinner($form,false);
       $form.children('.feedback').removeClass('d-none')
-      .addClass("alert-"+class_name).html('<p>('+status+': '+message+') '+data+'</p>'); 
+      .addClass("alert-"+class_name).append('<p>Provisioning Request #'+id+' '+message+'.</p>'); 
     }
   });
 }    
 
 function spinner($form, present) {
   if(present) {
+    $form.find('button[type="submit"]').prop('disabled', true);
     $form.find('button[type="submit"] .spinner-border').removeClass('d-none');
   } else {
     $form.find('button[type="submit"] .spinner-border').addClass('d-none');
+    $form.find('button[type="submit"]').prop('disabled', false);
+
   } 
 
 }
