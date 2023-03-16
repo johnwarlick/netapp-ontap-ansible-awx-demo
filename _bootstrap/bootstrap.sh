@@ -8,10 +8,13 @@ yes | \cp -rf netapp-ontap-ansible-awx-demo/_bootstrap/CentOS-AppStream.repo /et
 # 3.9 gives an error I don't have time to dive into right now 
 dnf install python3.8 -y
 sudo alternatives --set python3 /usr/bin/python3.8
-python3 -m venv venv
-source venv/bin/activate
+# Add custom venv to projects folder since it's already mounted in the countainers
+cd /var/lib/awx/projects
+python3 -m venv custom-venv
+source custom-venv/bin/activate
+umask 0022
 pip install --upgrade pip setuptools
-pip install ansible requests docker
+pip install -r /root/netapp-ontap-ansible-awx-demo/requirements.txt
 # This lab has a pretty old AWX install
 ansible-galaxy collection install awx.awx:17.0.0 
 if [ x"${TOWER_PASS}" == "x" ]; then 
@@ -22,5 +25,5 @@ if [ x"${ONTAP_PASS}" == "x" ]; then
 fi
 export ONTAP_PASSWORD=$ONTAP_PASS
 export TOWER_PASSWORD=$TOWER_PASS
-cd netapp-ontap-ansible-awx-demo/_bootstrap
+cd /root/netapp-ontap-ansible-awx-demo/_bootstrap
 ansible-playbook bootstrap.yml

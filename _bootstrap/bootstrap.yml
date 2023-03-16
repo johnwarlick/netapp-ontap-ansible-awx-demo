@@ -6,6 +6,8 @@
     - awx.awx
     - community.docker
   vars: 
+    custom_venv_path: /var/lib/awx/projects
+    awx_containers: ['awx_task', 'awx_web']
     tower_host: http://awx.demo.netapp.com
     tower_api_base: "{{ tower_host }}/api/v2/"
     tower_username: admin
@@ -40,10 +42,19 @@
       dest: "{{ config.env.path }}{{ config.env.file }}"    
     vars: 
       tower_oauth_token: "{{ tower_token.token }}"  
-  - name: Add Galaxy/Automation Hub Variable to Jobs -> Settings
+  - name: Add Galaxy/Automation Hub Variable to Settings -> Jobs
     tower_settings:
       name: PRIMARY_GALAXY_URL
       value: https://galaxy.ansible.com
+  - name: Add custom-venv to Settings -> System
+    tower_settings:
+      name: CUSTOM_VENV_PATHS
+      value: "{{ custom_venv_path }}"
+  # - name: Set up cluster2
+  #   tower_job_launch:
+  #     job_template: "ONTAP Cluster Setup"
+  #     extra_vars: 
+  #   register: job
   - name: Add ONTAP Cluster Admin custom credential type
     tower_credential_type:
       name: ONTAP Cluster Admin
@@ -86,6 +97,7 @@
       scm_type: git
       scm_url: https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo.git
       scm_update_on_launch: yes
+      custom_virtualenv: "{{ custom_venv_path }}"
       state: present
   - name: Add inventory 
     tower_inventory:
@@ -108,11 +120,26 @@
       ask_variables_on_launch: yes
       inventory: "{{ inventory_name }}"
       project: "{{ project_name }}"
-      playbook: "create_volume.yml"
+      playbook: "ontap_create_volume.yml"
       credentials:
         - "ONTAP Admin"
       state: "present"
-  - name: Install docker-compose 
+  # Not totally sure this is neccessary, we'll try on a fresh lab
+  # - name: "Fix containers' yum repos path :| "
+  #   shell: >
+  #       docker cp CentOS-AppStream.repo {{ item}}:/etc/yum.repos.d/CentOS-AppStream.repo \
+  #       && docker cp CentOS-Base.repo {{ item}}:/etc/yum.repos.d/CentOS-Base.repo
+  #   with_items: "{{ awx_containers }}"
+  # - name: "Install Python 3.8 on containers"
+  #   community.docker.docker_container_exec:  
+  #     container: "{{ item }}"
+  #     command: |
+  #       /bin/bash -c "rpm --rebuilddb && sudo yum clean all && \
+  #       sudo yum config-manager --disable PowerTools && \ 
+  #       dnf install python3.8 -y && \
+  #       sudo alternatives --set python3 /usr/bin/python3.8"
+  #   with_items: "{{ awx_containers }}"
+   - name: Install docker-compose 
     ansible.builtin.pip:
       name: docker-compose
   - name: Start provisioning app

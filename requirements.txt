@@ -4,5 +4,7 @@ netapp-lib
 azure-storage-blob
 awxkit
 ansible
+requests
+docker
 ansible[azure]
 jmespath
