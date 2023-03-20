@@ -1,0 +1,20 @@
+---
+- name: Upgrade firmware 
+  hosts: "{{ ansible_limit }}"
+  gather_facts: no
+  connection: 'local'
+  collections:
+    - netapp.ontap
+  vars: 
+    web_link: placeholder
+  tasks:
+  - name: Firmware upgrade, confirm successful download
+    netapp.ontap.na_ontap_firmware_upgrade:
+      state: present
+      package_url: "{{ web_link }}"
+      hostname: "{{ ontap_hostname }}"
+      username: "{{ ontap_username }}"
+      password: "{{ ontap_password }}"
+      https: "{{ https }}"
+      validate_certs: "{{ validate_certs }}"
+      fail_on_502_error: true

@@ -139,7 +139,7 @@
   #       dnf install python3.8 -y && \
   #       sudo alternatives --set python3 /usr/bin/python3.8"
   #   with_items: "{{ awx_containers }}"
-   - name: Install docker-compose 
+  - name: Install docker-compose 
     ansible.builtin.pip:
       name: docker-compose
   - name: Start provisioning app

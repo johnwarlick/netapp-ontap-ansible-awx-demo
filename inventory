@@ -1,7 +1,17 @@
 # See https://docs.ansible.com/ansible/latest/tips_tricks/ansible_tips_tricks.html#inventory-tips
 
+# Getting Started With ONTAP Automation Using Ansible
 [lab_ontap_clusters]
 cluster1 ontap_hostname=cluster1.demo.netapp.com
 cluster2 ontap_hostname=cluster2.demo.netapp.com
 
 awx ansible_host=awx.demo.netapp.com
+
+# Using Ansible AWX for Disaster Recovery for ONTAP
+[lab2_ontap_clusters]
+onPrem ontap_hostname=192.168.0.101
+remote ontap_hostname=192.168.0.102
+
+[all_lab_ontap_clusters:children]
+lab2_ontap_clusters
+lab_ontap_clusters
