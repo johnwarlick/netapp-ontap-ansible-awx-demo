@@ -5,16 +5,15 @@
   connection: 'local'
   collections:
     - netapp.ontap
-  vars: 
-    web_link: placeholder
+  vars_files: 
+    - http_server
   tasks:
-  - name: Firmware upgrade, confirm successful download
+  - name: Update qual_devices.zip, confirm successful download
     netapp.ontap.na_ontap_firmware_upgrade:
       state: present
-      package_url: "{{ web_link }}"
+      package_url: "{{ http_server_url }}/qual_devices.zip"
       hostname: "{{ ontap_hostname }}"
       username: "{{ ontap_username }}"
       password: "{{ ontap_password }}"
       https: "{{ https }}"
       validate_certs: "{{ validate_certs }}"
-      fail_on_502_error: true

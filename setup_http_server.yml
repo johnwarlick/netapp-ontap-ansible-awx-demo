@@ -1,0 +1,23 @@
+---
+- name: Set up simple http server on awx for upgrade playbooks
+  hosts: awx
+  gather_facts: no
+  collections:
+    - netapp.ontap
+  become: yes
+  vars_files: 
+    - http_server
+  tasks:
+  - name: Create http server directory
+    file:
+      path: "{{ http_server_path }}"
+      state: directory
+  - name: Start http server
+    ansible.builtin.shell: nohup python3 -m http.server {{ http_server_port }} &
+    args:
+      chdir: "{{ http_server_path }}"
+  - name: Upload file(s) if present 
+    ansible.builtin.copy:
+      src: "{{ item }}"
+      dest: "{{ http_server_path }}"
+    with_fileglob: "{{ upgrade_files_path }}*"     

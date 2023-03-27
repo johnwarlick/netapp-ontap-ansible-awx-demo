@@ -1,2 +1,3 @@
 .DS_Store
 /_bootstrap/app/api/__pycache__/
+venv/

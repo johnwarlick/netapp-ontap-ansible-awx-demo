@@ -1,0 +1,2 @@
+ansible_password: "{{ lookup('env', 'TOWER_PASSWORD') }}"
+ 
