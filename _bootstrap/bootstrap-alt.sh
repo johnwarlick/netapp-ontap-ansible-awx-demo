@@ -2,11 +2,14 @@
 cd ~/Desktop
 git clone https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo.git
 sudo apt update 
-dnf install python3.9 -y
-sudo alternatives --set python3 /usr/bin/python3.9
+sudo apt-get install python3.9 python3.9-venv -y
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
+sudo update-alternatives --set python3 /usr/bin/python3.9
+cd netapp-ontap-ansible-awx-demo
+python3 -m venv venv
+source venv/bin/activate
 sudo apt install python3-pip -y
 sudo pip3 install ansible -y
-cd netapp-ontap-ansible-awx-demo
 pip3 install -r requirements.txt
 ansible-galaxy collection install -r collections/requirements.yml
 read -s -p "Password for ONTAP Clusters: " ONTAP_PASS
