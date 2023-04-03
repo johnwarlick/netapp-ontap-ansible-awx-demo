@@ -12,10 +12,21 @@
     file:
       path: "{{ http_server_path }}"
       state: directory
-  - name: Start http server
-    ansible.builtin.shell: nohup python3 -m http.server {{ http_server_port }} &
-    args:
-      chdir: "{{ http_server_path }}"
+  - name: Install nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+  - name: Enable nginx 
+    ansible.builtin.systemd:
+      name: nginx
+      enabled: true
+      - name: Make sure a service unit is running
+  ansible.builtin.systemd:
+    state: started
+    name: httpd
+
+  
+     
   - name: Upload file(s) if present 
     ansible.builtin.copy:
       src: "{{ item }}"

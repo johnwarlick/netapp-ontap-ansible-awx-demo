@@ -4,4 +4,6 @@ collections:
   - name: netapp.ontap
   - name: ansible.posix
   - name: awx.awx
+    version: 17.0.0 
+
 #  - name: awx.awx:17.0.0

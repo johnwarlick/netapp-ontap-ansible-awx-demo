@@ -15,8 +15,6 @@ source custom-venv/bin/activate
 umask 0022
 pip install --upgrade pip setuptools
 pip install -r /root/netapp-ontap-ansible-awx-demo/requirements.txt
-# This lab has a pretty old AWX install
-ansible-galaxy collection install awx.awx:17.0.0 
 if [ x"${TOWER_PASS}" == "x" ]; then 
     read -s -p "Password for AWX: " TOWER_PASS
 fi

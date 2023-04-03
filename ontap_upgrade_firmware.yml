@@ -8,10 +8,14 @@
   vars_files: 
     - http_server
   tasks:
-  - name: Update qual_devices.zip, confirm successful download
+  - name: Check url
+    debug: 
+      var: http_server_url
+    run_once: true
+  - name: Update all.zip, confirm successful download
     netapp.ontap.na_ontap_firmware_upgrade:
       state: present
-      package_url: "{{ http_server_url }}/qual_devices.zip"
+      package_url: "{{ http_server_url }}/all.zip"
       hostname: "{{ ontap_hostname }}"
       username: "{{ ontap_username }}"
       password: "{{ ontap_password }}"

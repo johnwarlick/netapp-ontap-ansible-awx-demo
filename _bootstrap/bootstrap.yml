@@ -7,6 +7,7 @@
     - community.docker
   vars: 
     custom_venv_path: /var/lib/awx/projects
+    custom_venv_name: custom-venv
     awx_containers: ['awx_task', 'awx_web']
     tower_host: http://awx.demo.netapp.com
     tower_api_base: "{{ tower_host }}/api/v2/"
@@ -49,7 +50,7 @@
   - name: Add custom-venv to Settings -> System
     tower_settings:
       name: CUSTOM_VENV_PATHS
-      value: "{{ custom_venv_path }}"
+      value: ["{{ custom_venv_path }}"]
   # - name: Set up cluster2
   #   tower_job_launch:
   #     job_template: "ONTAP Cluster Setup"
@@ -97,7 +98,7 @@
       scm_type: git
       scm_url: https://github.com/johnwarlick/netapp-ontap-ansible-awx-demo.git
       scm_update_on_launch: yes
-      custom_virtualenv: "{{ custom_venv_path }}"
+      custom_virtualenv: "{{ custom_venv_path }}/{{ custom_venv_name }}"
       state: present
   - name: Add inventory 
     tower_inventory:
